@@ -1,9 +1,25 @@
 import './styles/App.css';
+import styled from "styled-components";
+import { colors } from "./styles/variables";
+import Card from "./components/Card";
 
-const App = () => (
-  <div className="App">
-    <span>Wolt react / typescript test task</span>
-  </div>
-);
+
+
+const Page = styled.div`
+  background-color: ${colors.grey1};
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const App = () => {
+  return (
+    <Page>
+      <Card />
+    </Page>
+  )
+}
 
 export default App;
