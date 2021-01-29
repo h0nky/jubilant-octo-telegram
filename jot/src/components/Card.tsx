@@ -1,13 +1,9 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardHeader, CardContent, Typography, Divider } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import { colors, fontSize } from "../styles/variables";
-import List from "./List";
-
-import data from '../data.json';
-
-const daysOfWeek : string[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+import { colors, fontSize } from "../constants/constants";
+import Schedule from "./Schedule";
 
 const useStyles: any = makeStyles({
   root: {
@@ -39,22 +35,10 @@ const useStyles: any = makeStyles({
   }
 });
 
-interface IDaySchedule {
-  type: string,
-  value: number
-}
 
-interface IData {
-  [key: string]: IDaySchedule[] 
-}
-
+// Card ---> Scheduler rename 
 export default function SimpleCard(): ReactElement {
-  const [ schedule, setSchedule ] = useState<IData>(data);
   const classes = useStyles();
-
-  useEffect(() => {
-    setSchedule(data);
-  }, [data]);
 
   return (
     <Card className={classes.root}>
@@ -71,7 +55,7 @@ export default function SimpleCard(): ReactElement {
         />
         <Divider className={classes.divider} />
         <CardContent className={classes.content}>
-            <List days={daysOfWeek} schedule={schedule} />
+            <Schedule />
         </CardContent>
     </Card>
   );

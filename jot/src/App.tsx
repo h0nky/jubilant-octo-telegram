@@ -1,9 +1,6 @@
-import './styles/App.css';
 import styled from "styled-components";
-import { colors } from "./styles/variables";
+import { colors } from "./constants/constants";
 import Card from "./components/Card";
-
-
 
 const Page = styled.div`
   background-color: ${colors.grey1};
