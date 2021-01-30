@@ -2,12 +2,13 @@ import React, { ReactElement, Fragment } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
+import Box from '@material-ui/core/Box';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import { fontSize, colors } from "../constants/constants";
-import { secondsToTimeFormat } from "../utils";
+import { secondsToTimeFormat, splitArrayInPairs } from "../utils";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     padding: 0
   },
@@ -20,7 +21,8 @@ const useStyles = makeStyles(() => ({
     fontSize: fontSize.small,
     color: colors.green,
     textTransform: 'uppercase',
-    fontFamily: 'Roboto Medium'
+    fontFamily: 'Roboto Medium',
+    marginLeft: theme.spacing(1)
   },
   schedulePrimary: {
     color: colors.black,
@@ -36,18 +38,14 @@ const useStyles = makeStyles(() => ({
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      marginRight: 4
+      marginRight: theme.spacing(.5)
   }
 }));
 
 interface IScheduleItemProps {
-    workHours: any
-}
-
-interface IItemProps {
-    day: string,
-    workingHours: any,
-    isToday: boolean
+  day: string,
+  workingHours: any,
+  isToday: boolean
 }
 
 interface IWeekDay {
@@ -55,62 +53,58 @@ interface IWeekDay {
   isToday: boolean
 }
 
-const DaySchedule = ({ workHours }: IScheduleItemProps) => {
-  const classes = useStyles();
-  console.log(workHours);
+interface IScheduleItemTextProps {
+  className: string,
+  text: string
+}
+
+const ScheduleItemText = ({ className, text }: IScheduleItemTextProps) => {
   return (
-    <Fragment>
-      {workHours ? (
-          <Typography
-              component="span"
-              className={classes.schedulePrimary}
-          >
-              {secondsToTimeFormat(workHours[0].value)} - {secondsToTimeFormat(workHours[1].value)}
-          </Typography>) : (
-            <Typography
-            component="span"
-            className={classes.scheduleSecondary}
-            >
-              Closed
-            </Typography>
-          )}
-    </Fragment>
+      <Typography
+        component="span"
+        className={className}
+      >
+        {text}
+    </Typography>    
+  );
+};
+
+const DaySchedule = ({ workingHours }: any) => {
+  const classes = useStyles();
+  if (!workingHours) return <ScheduleItemText className={classes.scheduleSecondary} text="Closed" />
+  const timePeriods = splitArrayInPairs(workingHours);
+  return (
+    <Box display="flex" flexDirection="column" alignItems="flex-end">
+      {timePeriods.map((period: any, index: number) => (
+          <ScheduleItemText
+            key={`list-${index}-1`}
+            className={classes.schedulePrimary}
+            text={`${secondsToTimeFormat(period[0].value)} - ${secondsToTimeFormat(period[1].value)}`}
+          />
+      ))}
+    </Box>
   );
 }
 
-// Renders day of the week
 const WeekDay = ({ day, isToday }: IWeekDay): ReactElement => {
   const classes = useStyles();
   return (
       <Fragment>
-          <Typography
-              component="span"
-              className={classes.textPrimary}
-          >
-              {day}
-          </Typography>
-          {isToday && (
-            <Typography
-                component="span"
-                className={classes.label}
-            >
-                Today
-            </Typography>
-      )}
+          <ScheduleItemText className={classes.textPrimary} text={day} />
+          {isToday && ( <ScheduleItemText className={classes.label} text="Today" />)}
       </Fragment>
   );
 };
 
-export default function Item({ day, workingHours, isToday }: IItemProps) {
+export default function ScheduleItem({ day, workingHours, isToday }: IScheduleItemProps) {
   const classes = useStyles();
-  
   return (
     <>
         <ListItem className={classes.root}>
             <ListItemText
                 className={classes.textWrapper}
                 primary={<WeekDay day={day} isToday={isToday} />}
-                secondary={<DaySchedule workHours={workingHours} />}
+                secondary={<DaySchedule workingHours={workingHours} />}
             />
         </ListItem>
         <Divider />

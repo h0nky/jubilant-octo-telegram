@@ -1,7 +1,7 @@
 import React, { ReactElement, useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import Item from "./ListItem";
+import ScheduleItem from "./ScheduleItem";
 import * as utils from "../utils";
 
 import { daysOfWeek } from '../constants/daysOfWeek';
@@ -23,15 +23,20 @@ interface ISchedule {
   [key: string]: IDaySchedule[] 
 }
 
+interface IWorkHours {
+  type: string,
+  value: number
+}
+
 const getFormatedSchedule = (): ISchedule => {
   // Original data object to an array [day, workingDays[]] like structure
   const workWeekArray = Object.entries(data);
 
   // Binding each time period to a corresponding day
   const workDaysByHours = workWeekArray
-  .map(([day, workHours]) => workHours
+  .map(([day, workHours]: (string|IWorkHours[]|any)[]) => workHours
   .map((hours: string[]) => ({ day, ...hours }))).flat();
-  
+
 
   // Logic here doesn't expect to have a gap between work days [for ex. restaurant is opened from Sunday till Tuesday].
   if (workDaysByHours[0] && workDaysByHours[0].type === 'close') {
@@ -48,8 +53,7 @@ const getFormatedSchedule = (): ISchedule => {
   }, []);
 
   // Transform array back to an object
-  const workingHours = workHoursPairs.reduce((acc: any, pairEntries: IDaySchedule[]) => {
-    console.log(pairEntries.length);
+  const workingHours = workHoursPairs.reduce((acc: { [x: string]: any; hasOwnProperty: (arg0: string[]) => boolean; }, pairEntries: IDaySchedule[]) => {
     let result;
     let [openHours] = pairEntries;
 
@@ -78,7 +82,7 @@ const Schedule = (): ReactElement => {
   return (
     <List className={classes.root}>
         {daysOfWeek.map((day: string) => (
-          <Item
+          <ScheduleItem
             key={`list-${day}-1`}
             day={day}
             workingHours={workHours[day]}

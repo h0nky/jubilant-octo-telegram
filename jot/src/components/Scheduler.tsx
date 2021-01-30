@@ -11,7 +11,8 @@ const useStyles = makeStyles({
     minWidth: 424,
     minHeight: 460,
     maxHeight: 460,
-    borderRadius: 14
+    borderRadius: 14,
+    paddingBottom: 32
   },
   title: {
     fontSize: fontSize.xLarge,

@@ -13,3 +13,10 @@ export const secondsToTimeFormat = (seconds: number) => {
     // return (hours % 12 === 0 ? 12 : (hours % 12)) + ':' + `${minutes}`.padStart(2, "0") + ' ' + partOfTheDay(hours);
     return (hours % 12 === 0 ? 12 : (hours % 12)) + ' ' + partOfTheDay(hours);
 };
+
+export const splitArrayInPairs = (array: any) => {
+    return array.reduce((acc: any, curr: any, index: number, arr: string[]) => {
+        if (index % 2 === 0) acc.push(arr.slice(index, index + 2));
+        return acc;
+      }, []);
+};
