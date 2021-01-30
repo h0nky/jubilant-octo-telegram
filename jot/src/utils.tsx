@@ -6,5 +6,10 @@ export const getCurrentDay = (day: string) => {
 };
 
 export const secondsToTimeFormat = (seconds: number) => {
-// TODO
+    let hours = new Date(seconds * 1000).getUTCHours();
+    // let minutes = new Date(seconds * 1000).getUTCMinutes();
+    let partOfTheDay = (hours: number) => hours >= 12 ? 'PM' : 'AM';
+
+    // return (hours % 12 === 0 ? 12 : (hours % 12)) + ':' + `${minutes}`.padStart(2, "0") + ' ' + partOfTheDay(hours);
+    return (hours % 12 === 0 ? 12 : (hours % 12)) + ' ' + partOfTheDay(hours);
 };

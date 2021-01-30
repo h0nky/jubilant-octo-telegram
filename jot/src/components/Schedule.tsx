@@ -14,21 +14,16 @@ const useStyles = makeStyles(({
 }));
 
 interface IDaySchedule {
-  type: string,
-  value: number
-}
-
-interface IData {
-  [key: string]: IDaySchedule[] 
-}
-
-interface IWorkHourPair {
   day: string,
   type: string,
   value: number
 }
 
-const getWorkingHours = () => {
+interface ISchedule {
+  [key: string]: IDaySchedule[] 
+}
+
+const getFormatedSchedule = (): ISchedule => {
   // Original data object to an array [day, workingDays[]] like structure
   const workWeekArray = Object.entries(data);
 
@@ -46,33 +41,38 @@ const getWorkingHours = () => {
       workDaysByHours.shift();
   }
 
+  // Creating array of [open] [close] pairs
   const workHoursPairs = workDaysByHours.reduce((acc, curr, index, arr) => {
     if (index % 2 === 0) acc.push(arr.slice(index, index + 2));
     return acc;
   }, []);
 
-  const workingHours = workHoursPairs.reduce((acc, pairEntries) => {
+  // Transform array back to an object
+  const workingHours = workHoursPairs.reduce((acc: any, pairEntries: IDaySchedule[]) => {
+    console.log(pairEntries.length);
+    let result;
     let [openHours] = pairEntries;
-    return {
-      ...acc,
-      [openHours.day]: pairEntries 
+
+    // If restaurant opened / closed multiple times during the same day
+    if (acc.hasOwnProperty([openHours.day])) {
+      acc[openHours.day] = [ ...acc[openHours.day], ...pairEntries ];
+      result = { ...acc, [openHours.day]: acc[openHours.day] };
+    } else {
+      result = { ...acc, [openHours.day]: pairEntries }
     }
+
+    return result;
   }, {});
 
   return workingHours;
 };
 
 const Schedule = (): ReactElement => {
-  const [ schedule, setSchedule ] = useState<IData>(data);
-  const [ workingHours, setWorkingHours ] = useState<IData>({});
+  const [ workHours, setWorkHours ] = useState<ISchedule>({});
   const classes = useStyles();
 
   useEffect(() => {
-    setSchedule(data);
-  }, [data]);
-
-  useEffect(() => {
-    setWorkingHours(getWorkingHours());
+    setWorkHours(getFormatedSchedule());
   }, []);
 
   return (
@@ -81,7 +81,7 @@ const Schedule = (): ReactElement => {
           <Item
             key={`list-${day}-1`}
             day={day}
-            workingHours={workingHours[day]}
+            workingHours={workHours[day]}
             isToday={utils.getCurrentDay(day)}
           />))}
     </List>

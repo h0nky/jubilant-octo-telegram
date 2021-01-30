@@ -1,22 +1,19 @@
-import styled from "styled-components";
 import { colors } from "./constants/constants";
-import Card from "./components/Card";
-
-const Page = styled.div`
-  background-color: ${colors.grey1};
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+import Scheduler from "./components/Scheduler";
+import Box from '@material-ui/core/Box';
 
 const App = () => {
   return (
-    <Page>
-      <Card />
-    </Page>
-  )
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        bgcolor={colors.grey1}
+        height="100vh"
+      >
+        <Scheduler />
+      </Box>
+  );
 }
 
 export default App;
