@@ -29,7 +29,7 @@ interface IWorkHours {
 }
 
 const getFormatedSchedule = (): ISchedule => {
-  // Original data object to an array [day, workingDays[]] like structure
+  // Original data object to an array [day, workDays[]] like structure
   const workWeekArray = Object.entries(data);
 
   // Binding each time period to a corresponding day
@@ -47,28 +47,25 @@ const getFormatedSchedule = (): ISchedule => {
   }
 
   // Creating array of [open] [close] pairs
-  const workHoursPairs = workDaysByHours.reduce((acc, curr, index, arr) => {
-    if (index % 2 === 0) acc.push(arr.slice(index, index + 2));
-    return acc;
-  }, []);
+  const workHoursPairs = utils.splitArrayInPairs(workDaysByHours);
 
   // Transform array back to an object
-  const workingHours = workHoursPairs.reduce((acc: { [x: string]: any; hasOwnProperty: (arg0: string[]) => boolean; }, pairEntries: IDaySchedule[]) => {
+  const workHours = workHoursPairs.reduce((acc: any, pairEntries: IDaySchedule[]) => {
     let result;
     let [openHours] = pairEntries;
 
-    // If restaurant opened / closed multiple times during the same day
+    // Condition for the case when restaurant opened/closed multiple times during the same day
     if (acc.hasOwnProperty([openHours.day])) {
       acc[openHours.day] = [ ...acc[openHours.day], ...pairEntries ];
       result = { ...acc, [openHours.day]: acc[openHours.day] };
     } else {
-      result = { ...acc, [openHours.day]: pairEntries }
+      result = { ...acc, [openHours.day]: pairEntries };
     }
 
     return result;
   }, {});
 
-  return workingHours;
+  return workHours;
 };
 
 const Schedule = (): ReactElement => {
@@ -85,7 +82,7 @@ const Schedule = (): ReactElement => {
           <ScheduleItem
             key={`list-${day}-1`}
             day={day}
-            workingHours={workHours[day]}
+            workHours={workHours[day]}
             isToday={utils.getCurrentDay(day)}
           />))}
     </List>

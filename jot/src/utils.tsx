@@ -14,9 +14,15 @@ export const secondsToTimeFormat = (seconds: number) => {
     return (hours % 12 === 0 ? 12 : (hours % 12)) + ' ' + partOfTheDay(hours);
 };
 
-export const splitArrayInPairs = (array: any) => {
-    return array.reduce((acc: any, curr: any, index: number, arr: string[]) => {
+interface IDaySchedule {
+    day: string,
+    type: string,
+    value: number
+  }
+
+export const splitArrayInPairs = (array: IDaySchedule[]) => {
+    return array.reduce((acc: Array<IDaySchedule[]>, curr: IDaySchedule, index: number, arr: IDaySchedule[]) => {
         if (index % 2 === 0) acc.push(arr.slice(index, index + 2));
         return acc;
-      }, []);
+    }, []);
 };

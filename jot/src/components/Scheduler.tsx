@@ -7,12 +7,8 @@ import Schedule from "./Schedule";
 
 const useStyles = makeStyles({
   root: {
-    width: 424,
     minWidth: 424,
-    minHeight: 460,
-    maxHeight: 460,
-    borderRadius: 14,
-    paddingBottom: 32
+    borderRadius: 14
   },
   title: {
     fontSize: fontSize.xLarge,
@@ -37,8 +33,8 @@ export default function Scheduler(): ReactElement {
           pb={2.5}
           pt={4.5}
         >
-          <Box mr={2}>
-            <AccessTimeIcon />
+          <Box mr={2} mt={.5}>
+            <AccessTimeIcon style={{ color: colors.grey3 }} />
           </Box>
           <Typography className={classes.title}>
               Opening hours
@@ -47,7 +43,7 @@ export default function Scheduler(): ReactElement {
         <Box ml={5.5} mr={5.5}>
           <Divider className={classes.divider} />
         </Box>
-        <Box pt={0} pl={5.5} pr={5.5}>
+        <Box pt={0} pl={5.5} pr={5.5} pb={5}>
             <Schedule />
         </Box>
     </Card>
